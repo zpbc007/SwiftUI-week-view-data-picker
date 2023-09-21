@@ -36,16 +36,12 @@ public struct DatePickerWeekView: View {
             switch tabIndex {
             case .left:
                 WeekView(date: .constant(lastWeekStartDay))
-                    .frame(minHeight: 0)
             case .center:
                 WeekView(date: $date)
-                    .frame(minHeight: 0)
             case .right:
                 WeekView(date: .constant(nextWeekStartDay))
-                    .frame(minHeight: 0)
             }
         }
-        .frame(minHeight: 0)
     }
 }
 
