@@ -33,28 +33,30 @@ extension Date {
 
         return result
     }
+    
+    func toString(format: String) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar.current
+        formatter.dateFormat = format
+
+        return formatter.string(from: self)
+    }
+    
+    var todayStartPoint: Date {
+        Calendar.current.startOfDay(for: self)
+    }
 }
 
 struct WeekView: View {
     @Binding var date: Date
-    
-    private static var WeekFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEE"
-        return dateFormatter
-    }()
-    
-    private static var DayFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d"
-        return dateFormatter
-    }()
+    var weekDays: [Date]
+    var id: String = ""
     
     var body: some View {
         HStack {
-            ForEach(date.weekDays(), id: \.self) { weekDay in
+            ForEach(weekDays, id: \.self) { weekDay in
                 VStack {
-                    Text(Self.WeekFormatter.string(from: weekDay))
+                    Text(weekDay.toString(format: "EEE"))
                         .font(.system(size: 16))
                         .fontWeight(.semibold)
                         .frame(maxWidth:.infinity)
@@ -70,7 +72,7 @@ struct WeekView: View {
                                 .frame(width: 5)
                         }
                         
-                        Text(Self.DayFormatter.string(from: weekDay))
+                        Text(weekDay.toString(format: "d"))
                             .font(.system(size: 16))
                             .monospaced()
                             .frame(maxWidth: .infinity)
@@ -93,7 +95,7 @@ struct WeekView_Previews: PreviewProvider {
         var body: some View {
             VStack {
                 Text("Header")
-                WeekView(date: $selectedDate)
+                WeekView(date: $selectedDate, weekDays: selectedDate.weekDays())
                 Text("Content")
                 Spacer()
             }

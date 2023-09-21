@@ -2,45 +2,38 @@ import SwiftUI
 
 public struct DatePickerWeekView: View {
     @Binding var date: Date
+    @Binding var page: Int
     
-    var lastWeekStartDay: Date {
+    func calculatePageDate(_ page: Int) -> Date {
         Calendar.current.date(
             byAdding: .day,
-            value: -7,
-            to: date
+            value: page * 7,
+            to: Date.now.todayStartPoint
         )!
-    }
-    
-    var nextWeekStartDay: Date {
-        Calendar.current.date(
-            byAdding: .day,
-            value: 7,
-            to: date
-        )!
-    }
-    
-    public init(date: Binding<Date>) {
-        self._date = date
     }
     
     public var body: some View {
-        SwipeView { direction in
-            if direction == .left {
-                date = lastWeekStartDay
+        GeometryReader { geometry in
+            InfiniteTabPageView(
+                width: geometry.size.width,
+                page: $page
+            ) { page in
+                VStack {
+                    WeekView(
+                        date: $date.animation(.easeOut),
+                        weekDays: calculatePageDate(page).weekDays()
+                    )
+                }
             }
-            
-            if direction == .right {
-                date = nextWeekStartDay
+        }
+        .onChange(of: page) { newValue in
+            // 回到当天
+            if (page == 0
+                && self.date == Date.now.todayStartPoint
+            ) {
+                return
             }
-        } contentBuilder: { tabIndex in
-            switch tabIndex {
-            case .left:
-                WeekView(date: .constant(lastWeekStartDay))
-            case .center:
-                WeekView(date: $date)
-            case .right:
-                WeekView(date: .constant(nextWeekStartDay))
-            }
+            self.date = calculatePageDate(newValue)
         }
     }
 }
@@ -48,6 +41,7 @@ public struct DatePickerWeekView: View {
 struct DatePickerWeekView_Previews: PreviewProvider {
     struct DatePickerWeekViewTestContainer: View {
         @State var selectedDate = Calendar.current.startOfDay(for: Date.now)
+        @State var page = 0
         
         var dateString: String {
             let dateFormatter = DateFormatter()
@@ -62,13 +56,15 @@ struct DatePickerWeekView_Previews: PreviewProvider {
                     Text("SelectedDay: \(dateString)")
                     Spacer()
                     Button("Today") {
-                        withAnimation {
-                            selectedDate = Calendar.current.startOfDay(for: Date.now)
-                        }
+                        selectedDate = Calendar.current.startOfDay(for: Date.now)
+                        page = 0
                     }
                 }
                 
-                DatePickerWeekView(date: $selectedDate)
+                DatePickerWeekView(
+                    date: $selectedDate,
+                    page: $page
+                )
                     .frame(height: 80, alignment: .top)
                 
                 HStack {
