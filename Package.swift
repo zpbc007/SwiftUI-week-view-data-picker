@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Date-Picker-Week-View",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v16),
         .macOS(.v10_15),
     ],
     products: [
