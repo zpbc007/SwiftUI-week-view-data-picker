@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftUI-week-view-data-picker",
+    name: "Date-Picker-Week-View",
     platforms: [
         .iOS(.v13),
         .macOS(.v10_15),
@@ -12,8 +12,8 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "SwiftUI-week-view-data-picker",
-            targets: ["SwiftUI-week-view-data-picker"]),
+            name: "Date-Picker-Week-View",
+            targets: ["Date-Picker-Week-View"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,7 +27,7 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "SwiftUI-week-view-data-picker",
+            name: "Date-Picker-Week-View",
             dependencies: [
                 .product(
                     name: "ComposableArchitecture",
@@ -35,13 +35,9 @@ let package = Package(
                 )
             ]),
         .testTarget(
-            name: "SwiftUI-week-view-data-pickerTests",
+            name: "Date-Picker-Week-ViewTests",
             dependencies: [
-                "SwiftUI-week-view-data-picker",
-                .product(
-                    name: "ComposableArchitecture",
-                    package: "swift-composable-architecture"
-                )
+                "Date-Picker-Week-View"
             ]),
     ]
 )

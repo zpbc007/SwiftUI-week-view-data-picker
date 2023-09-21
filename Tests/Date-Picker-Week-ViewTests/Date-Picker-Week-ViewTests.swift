@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftUI_week_view_data_picker
+@testable import Date_Picker_Week_View
 
 final class SwiftUI_week_view_data_pickerTests: XCTestCase {
     func testExample() throws {
