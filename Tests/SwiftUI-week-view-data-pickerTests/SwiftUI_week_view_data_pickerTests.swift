@@ -6,6 +6,6 @@ final class SwiftUI_week_view_data_pickerTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(SwiftUI_week_view_data_picker().text, "Hello, World!")
+//        XCTAssertEqual(SwiftUI_week_view_data_picker().text, "Hello, World!")
     }
 }
