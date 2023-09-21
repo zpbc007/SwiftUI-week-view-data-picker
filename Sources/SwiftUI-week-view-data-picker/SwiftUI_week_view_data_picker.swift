@@ -45,6 +45,8 @@ struct MyTestView: View {
 }
 
 public struct MyTestViewContainer: View {
+    public init() {}
+    
     public var body: some View {
         MyTestView(
             store: Store(initialState: MyTestFeature.State(), reducer: {
