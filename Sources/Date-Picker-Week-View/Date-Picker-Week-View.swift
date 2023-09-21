@@ -1,65 +1,90 @@
-import ComposableArchitecture
 import SwiftUI
 
-struct MyTestFeature: Reducer {
-    struct State: Equatable {
-        var count = 0
+public struct DatePickerWeekView: View {
+    @Binding var date: Date
+    
+    var lastWeekStartDay: Date {
+        Calendar.current.date(
+            byAdding: .day,
+            value: -7,
+            to: date
+        )!
     }
     
-    enum Action: Equatable {
-        case add
-        case minus
+    var nextWeekStartDay: Date {
+        Calendar.current.date(
+            byAdding: .day,
+            value: 7,
+            to: date
+        )!
     }
     
-    func reduce(into state: inout State, action: Action) -> Effect<Action> {
-        switch action {
-        case .add:
-            state.count += 1
-            return .none
-        case .minus:
-            state.count -= 1
-            return .none
-        }
+    public init(date: Binding<Date>) {
+        self._date = date
     }
-}
-
-struct MyTestView: View {
-    let store: StoreOf<MyTestFeature>
     
     public var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
-            VStack {
-                Text("count: \(viewStore.count)")
-                HStack {
-                    Button("-") {
-                        viewStore.send(.minus)
-                    }
-                    Button("+") {
-                        viewStore.send(.add)
-                    }
-                }
+        SwipeView { direction in
+            if direction == .left {
+                date = lastWeekStartDay
             }
             
+            if direction == .right {
+                date = nextWeekStartDay
+            }
+        } contentBuilder: { tabIndex in
+            switch tabIndex {
+            case .left:
+                WeekView(date: .constant(lastWeekStartDay))
+                    .frame(minHeight: 0)
+            case .center:
+                WeekView(date: $date)
+                    .frame(minHeight: 0)
+            case .right:
+                WeekView(date: .constant(nextWeekStartDay))
+                    .frame(minHeight: 0)
+            }
+        }
+        .frame(minHeight: 0)
+    }
+}
+
+struct DatePickerWeekView_Previews: PreviewProvider {
+    struct DatePickerWeekViewTestContainer: View {
+        @State var selectedDate = Calendar.current.startOfDay(for: Date.now)
+        
+        var dateString: String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            
+            return dateFormatter.string(from: selectedDate)
+        }
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("SelectedDay: \(dateString)")
+                    Spacer()
+                    Button("Today") {
+                        withAnimation {
+                            selectedDate = Calendar.current.startOfDay(for: Date.now)
+                        }
+                    }
+                }
+                
+                DatePickerWeekView(date: $selectedDate)
+                    .frame(height: 80, alignment: .top)
+                
+                HStack {
+                    Text("Content")
+                }
+                
+                Spacer()
+            }
         }
     }
-}
-
-public struct MyTestViewContainer: View {
-    public init() {}
     
-    public var body: some View {
-        MyTestView(
-            store: Store(initialState: MyTestFeature.State(), reducer: {
-                MyTestFeature()
-            })
-        )
-    }
-}
-
-struct MyTestView_Previews: PreviewProvider {
     static var previews: some View {
-        MyTestView(store: Store(initialState: MyTestFeature.State(), reducer: {
-            MyTestFeature()
-        }))
+        DatePickerWeekViewTestContainer()
     }
 }
