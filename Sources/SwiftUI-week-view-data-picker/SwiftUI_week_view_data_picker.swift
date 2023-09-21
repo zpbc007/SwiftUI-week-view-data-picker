@@ -23,7 +23,7 @@ struct MyTestFeature: Reducer {
     }
 }
 
-public struct MyTestView: View {
+struct MyTestView: View {
     let store: StoreOf<MyTestFeature>
     
     public var body: some View {
@@ -44,6 +44,15 @@ public struct MyTestView: View {
     }
 }
 
+public struct MyTestViewContainer: View {
+    public var body: some View {
+        MyTestView(
+            store: Store(initialState: MyTestFeature.State(), reducer: {
+                MyTestFeature()
+            })
+        )
+    }
+}
 
 struct MyTestView_Previews: PreviewProvider {
     static var previews: some View {
