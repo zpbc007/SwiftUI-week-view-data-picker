@@ -4,6 +4,11 @@ public struct DatePickerWeekView: View {
     @Binding var date: Date
     @Binding var page: Int
     
+    public init(date: Binding<Date>, page: Binding<Int>) {
+        self._date = date
+        self._page = page
+    }
+    
     func calculatePageDate(_ page: Int) -> Date {
         Calendar.current.date(
             byAdding: .day,
