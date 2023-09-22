@@ -26,28 +26,27 @@ public struct DatePickerWeekView: View {
                 }
             }
         }
-        .onChange(of: page) { newValue in
-            // 回到当天
-            if (page == 0
-                && self.date == Date.now.todayStartPoint
-            ) {
-                return
-            }
-            self.date = calculatePageDate(newValue)
-        }
     }
 }
 
 struct DatePickerWeekView_Previews: PreviewProvider {
     struct DatePickerWeekViewTestContainer: View {
-        @State var selectedDate = Calendar.current.startOfDay(for: Date.now)
+        @State var date = Calendar.current.startOfDay(for: Date.now)
         @State var page = 0
         
         var dateString: String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .short
             
-            return dateFormatter.string(from: selectedDate)
+            return dateFormatter.string(from: date)
+        }
+        
+        func calculatePageDate(_ page: Int) -> Date {
+            Calendar.current.date(
+                byAdding: .day,
+                value: page * 7,
+                to: Date.now.todayStartPoint
+            )!
         }
         
         var body: some View {
@@ -56,13 +55,13 @@ struct DatePickerWeekView_Previews: PreviewProvider {
                     Text("SelectedDay: \(dateString)")
                     Spacer()
                     Button("Today") {
-                        selectedDate = Calendar.current.startOfDay(for: Date.now)
+                        date = Calendar.current.startOfDay(for: Date.now)
                         page = 0
                     }
                 }
                 
                 DatePickerWeekView(
-                    date: $selectedDate,
+                    date: $date,
                     page: $page
                 )
                     .frame(height: 80, alignment: .top)
@@ -72,6 +71,15 @@ struct DatePickerWeekView_Previews: PreviewProvider {
                 }
                 
                 Spacer()
+            }
+            .onChange(of: page) { newValue in
+                // 回到当天
+                if (page == 0
+                    && self.date == Date.now.todayStartPoint
+                ) {
+                    return
+                }
+                self.date = calculatePageDate(newValue)
             }
         }
     }
